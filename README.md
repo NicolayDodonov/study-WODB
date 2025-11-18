@@ -32,3 +32,4 @@ __Особенности__
 * [Драйвер подключения Redis для Go](https://github.com/redis/go-redis)
 * [Драйвер подключения MongoDB для Go](https://github.com/mongodb/mongo-go-driver)
 * [Расширение стандартного драйвера SQL для Go](https://github.com/jmoiron/sqlx)
+* [Минималистичный читатель конфигурации](https://github.com/ilyakaznacheev/cleanenv)
