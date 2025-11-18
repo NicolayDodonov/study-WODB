@@ -3,6 +3,8 @@ http-server:
   port: ""
   timeout: 15s
   path-file-server: "./web/"  #путь до файлов фронта
+  google-redirect-url: ""
+  state: "auth1111"
 
 postgres:
   host: "localhost"           #Адрес сервера PostgresSQL

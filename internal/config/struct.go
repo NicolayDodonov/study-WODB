@@ -10,10 +10,12 @@ type Config struct {
 }
 
 type HttpServer struct {
-	Addr       string        `yaml:"addr"`
-	Port       int           `yaml:"port"`
-	Timeout    time.Duration `yaml:"timeout"`
-	FileServer string        `yaml:"path-file-server"`
+	Addr            string        `yaml:"addr"`
+	Port            int           `yaml:"port"`
+	Timeout         time.Duration `yaml:"timeout"`
+	FileServer      string        `yaml:"path-file-server"`
+	AuthRedirectURL string        `yaml:"google-redirect-url"`
+	State           string        `yaml:"state"`
 }
 
 type Postgres struct {

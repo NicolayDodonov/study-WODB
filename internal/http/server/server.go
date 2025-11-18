@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 	"study-WODB/internal/config"
+	"study-WODB/internal/http/auth"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -34,9 +35,11 @@ func (s *HttpServer) Start(cnf *config.Config) {
 	})
 
 	// настройка ресурсов аутентификации
+	gAuth := auth.New(cnf)
 	r.Route("/auth", func(r chi.Router) {
-		r.Post("/local", todo)  // стандартный аутентификатор
-		r.Post("/google", todo) // Oauth2 аутентификатор от google
+		r.Post("/local", todo)                       // стандартный аутентификатор
+		r.Get("/google", gAuth.GoogleCall)           // Oauth2 аутентификатор от google
+		r.Post("/google-callback", gAuth.GoogleBack) // переадресация назад
 	})
 
 	// настройка graphQL точки входа
