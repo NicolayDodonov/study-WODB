@@ -23,3 +23,12 @@ __Особенности__
 * [ ] MongoDB хранит отзывы и фото блюд.
 * [ ] Транзакции при оплате и подтверждении заказов.
 * [ ] Миграции с precondition при изменении схемы заказов.
+
+## Использованые библиотеки
+
+* [Библиотека OAuth2 для Go](https://github.com/golang/oauth2)
+* [Библиотека JWT для Go](https://github.com/golang-jwt/jwt)
+* [Библиотека GraphQL для Go](https://github.com/graphql-go/graphql)
+* [Драйвер подключения Redis для Go](https://github.com/redis/go-redis)
+* [Драйвер подключения MongoDB для Go](https://github.com/mongodb/mongo-go-driver)
+* [Расширение стандартного драйвера SQL для Go](https://github.com/jmoiron/sqlx)
