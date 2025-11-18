@@ -1,20 +1,21 @@
 http-server:
-  address: ""         #Адресс развёртывания HTTP сервера
+  address: ""                 #Адресс развёртывания HTTP сервера
   port: ""
   timeout: 15s
+  path-file-server: "./web/"  #путь до файлов фронта
 
 postgres:
-  host: "localhost"   #Адрес сервера PostgresSQL
+  host: "localhost"           #Адрес сервера PostgresSQL
   port: 5432
   user: "postgres"
   password: "postgres"
   dbname: ""
 
 mongo:
-  host: "localhost"   #Адрес сервера MongoDB
+  host: "localhost"           #Адрес сервера MongoDB
   port: 27017
   dbname: ""
 
 logger:
-  path: "log/log.txt" #Путь до файла логов
-  rang: "Error"       #Debug|Info|Error|Off
+  path: "log/log.txt"         #Путь до файла логов
+  rang: "Error"               #Debug|Info|Error|Off

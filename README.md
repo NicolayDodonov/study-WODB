@@ -33,3 +33,6 @@ __Особенности__
 * [Драйвер подключения MongoDB для Go](https://github.com/mongodb/mongo-go-driver)
 * [Расширение стандартного драйвера SQL для Go](https://github.com/jmoiron/sqlx)
 * [Минималистичный читатель конфигурации](https://github.com/ilyakaznacheev/cleanenv)
+* [Маршрутизатор chi](https://github.com/go-chi/chi)
+* [Дополнение маршрутизатора chi для проверок CORS](https://github.com/go-chi/cors)
+

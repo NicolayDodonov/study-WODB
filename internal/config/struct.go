@@ -3,16 +3,17 @@ package config
 import "time"
 
 type Config struct {
-	*HttpServer
-	*Postgres
-	*Mongo
-	*Logger
+	*HttpServer `yaml:"http-server"`
+	*Postgres   `yaml:"postgres"`
+	*Mongo      `yaml:"mongo"`
+	*Logger     `yaml:"logger"`
 }
 
 type HttpServer struct {
-	Addr    string        `yaml:"addr"`
-	Port    int           `yaml:"port"`
-	Timeout time.Duration `yaml:"timeout"`
+	Addr       string        `yaml:"addr"`
+	Port       int           `yaml:"port"`
+	Timeout    time.Duration `yaml:"timeout"`
+	FileServer string        `yaml:"path-file-server"`
 }
 
 type Postgres struct {
