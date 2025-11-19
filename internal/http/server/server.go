@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"strconv"
 	"study-WODB/internal/config"
-	"study-WODB/internal/http/auth"
+	"study-WODB/internal/handler"
 	"study-WODB/internal/logger"
 	"time"
 
@@ -44,7 +44,9 @@ func (s *HttpServer) Start() {
 
 	// настройка ресурсов аутентификации
 	s.Debug(" - configuring authentication resources")
-	gAuth := auth.New(s.Config)
+	// создание обработчиков
+	gAuth := handler.NewGoogleAuth(s.Config)
+
 	r.Route("/auth", func(r chi.Router) {
 		r.Get("/local", todo)                       // стандартный аутентификатор
 		r.Get("/google", gAuth.GoogleCall)          // Oauth2 аутентификатор от google
