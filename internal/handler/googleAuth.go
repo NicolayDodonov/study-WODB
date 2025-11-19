@@ -22,9 +22,9 @@ type GoogleAuth struct {
 // New возвращает готовую конфигурацию
 func NewGoogleAuth(cnf *config.Config, log *logger.Logger) *GoogleAuth {
 	AuthConfig := &oauth2.Config{
-		RedirectURL:  makeRedirectUrl(cnf),       //адрес переадресации назад
-		ClientID:     os.Getenv("Client_ID"),     //получить из переменных окружений
-		ClientSecret: os.Getenv("Client_Secret"), //получить из переменных окружений
+		RedirectURL:  makeRedirectUrl(cnf),              //адрес переадресации назад
+		ClientID:     os.Getenv("Google_Client_ID"),     //получить из переменных окружений
+		ClientSecret: os.Getenv("Google_Client_Secret"), //получить из переменных окружений
 		Scopes: []string{ // Список получаемых данных
 			"https://www.googleapis.com/auth/userinfo.email",
 			"https://www.googleapis.com/auth/userinfo.profile",

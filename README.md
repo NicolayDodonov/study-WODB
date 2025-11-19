@@ -33,8 +33,8 @@ __Особенности__
 
 1. Установить переменные окружения:
    <br> Config_Path - адресс до файла конфигурации
-   <br> Client_ID - 
-   <br> Client_Secret - 
+   <br> Google_Client_ID - Открытый ключ Google приложения Oauth2. [Документация](https://developers.google.com/identity/protocols/oauth2?hl=ru)
+   <br> Google_Client_Secret - Приватный ключ Google приложения Oauth2.
 2. Запустить приложение.
 
 ## Использованые библиотеки
