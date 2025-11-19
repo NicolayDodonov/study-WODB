@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"study-WODB/internal/config"
 	"time"
 )
 
@@ -32,14 +33,14 @@ type Logger struct {
 }
 
 // New создаёт новый логгер и возвращает или указатель на него или ошибку.
-func New(path string, level string) (*Logger, error) {
-	file, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+func New(cnf *config.Config) (*Logger, error) {
+	file, err := os.OpenFile(cnf.Logger.Path, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		return &Logger{}, err
 	}
 	return &Logger{
 		file:  file,
-		level: convert(level),
+		level: convert(cnf.Logger.Rang),
 	}, nil
 }
 

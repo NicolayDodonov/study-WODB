@@ -1,6 +1,6 @@
 http-server:
-  address: ""                 #Адресс развёртывания HTTP сервера
-  port: ""
+  address: "localhost"                 #Адресс развёртывания HTTP сервера
+  port: 8080
   timeout: 15s
   path-file-server: "./web/"  #путь до файлов фронта
   google-redirect-url: ""
@@ -20,4 +20,4 @@ mongo:
 
 logger:
   path: "log/log.txt"         #Путь до файла логов
-  rang: "Error"               #Debug|Info|Error|Off
+  rang: "Debug"               #Debug|Info|Error|Off

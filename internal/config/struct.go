@@ -10,7 +10,7 @@ type Config struct {
 }
 
 type HttpServer struct {
-	Addr            string        `yaml:"addr"`
+	Addr            string        `yaml:"address"`
 	Port            int           `yaml:"port"`
 	Timeout         time.Duration `yaml:"timeout"`
 	FileServer      string        `yaml:"path-file-server"`

@@ -3,6 +3,7 @@ package auth
 import (
 	"io/ioutil"
 	"net/http"
+	"os"
 	"study-WODB/internal/config"
 
 	"golang.org/x/oauth2"
@@ -17,9 +18,9 @@ type Auth struct {
 // New возвращает готовую конфигурацию
 func New(cnf *config.Config) *Auth {
 	AuthConfig := &oauth2.Config{
-		RedirectURL:  cnf.AuthRedirectURL, //адрес переадресации назад
-		ClientID:     "",                  //todo: получить из переменных окружений
-		ClientSecret: "",                  //todo: получить из переменных окружений
+		RedirectURL:  cnf.AuthRedirectURL,        //адрес переадресации назад
+		ClientID:     os.Getenv("Client_ID"),     //todo: получить из переменных окружений
+		ClientSecret: os.Getenv("Client_Secret"), //todo: получить из переменных окружений
 		Scopes:       []string{},
 		Endpoint:     google.Endpoint,
 	}

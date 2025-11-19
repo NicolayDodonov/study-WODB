@@ -9,7 +9,9 @@ import (
 
 // MustLoad читает файл конфигурации в структуру Config.
 // При любой ошибки чтения вызывает панику.
-func MustLoad(path string) *Config {
+func MustLoad() *Config {
+	path := os.Getenv("Config_Path")
+
 	if path == "" {
 		log.Fatal("config file path is empty")
 	}
