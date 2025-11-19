@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"study-WODB/internal/config"
+	"study-WODB/internal/logger"
 	"study-WODB/internal/services"
 
 	"golang.org/x/oauth2"
@@ -14,11 +15,12 @@ import (
 type GoogleAuth struct {
 	Config *oauth2.Config
 	State  string
+	log    *logger.Logger
 	svc    *services.AuthServices
 }
 
 // New возвращает готовую конфигурацию
-func NewGoogleAuth(cnf *config.Config) *GoogleAuth {
+func NewGoogleAuth(cnf *config.Config, log *logger.Logger) *GoogleAuth {
 	AuthConfig := &oauth2.Config{
 		RedirectURL:  makeRedirectUrl(cnf),       //адрес переадресации назад
 		ClientID:     os.Getenv("Client_ID"),     //получить из переменных окружений
@@ -32,12 +34,14 @@ func NewGoogleAuth(cnf *config.Config) *GoogleAuth {
 	return &GoogleAuth{
 		Config: AuthConfig,
 		State:  cnf.State,
+		log:    log,
 		svc:    services.NewAuthServices(),
 	}
 }
 
 // GoogleCall формирует url и переадресует понему к google oAuth2 сервис.
 func (auth *GoogleAuth) GoogleCall(w http.ResponseWriter, r *http.Request) {
+	auth.log.Info("Google-Oauth2 call started")
 	url := auth.Config.AuthCodeURL(auth.State)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -46,13 +50,15 @@ func (auth *GoogleAuth) GoogleCall(w http.ResponseWriter, r *http.Request) {
 func (auth *GoogleAuth) GoogleBack(w http.ResponseWriter, r *http.Request) {
 	// проверяем правильность State токена
 	if r.FormValue("state") != auth.State {
-		http.Error(w, "state did not match", http.StatusBadRequest)
+		auth.log.Error("Google-Oauth2 error: state mismatch")
+		http.Error(w, "state mismatch", http.StatusBadRequest)
 		return
 	}
 	code := r.FormValue("code")
 	// запрашиваем токен
 	token, err := auth.Config.Exchange(oauth2.NoContext, code) //token
 	if err != nil {
+		auth.log.Error("Oauth2 error:" + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
@@ -60,15 +66,18 @@ func (auth *GoogleAuth) GoogleBack(w http.ResponseWriter, r *http.Request) {
 	// получаем информацию о пользователе
 	user, err := auth.svc.ParseGoogleData(token)
 	if err != nil {
+		auth.log.Error("Oauth2 error:" + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	if err = auth.svc.AuthUser(user); err != nil {
+		auth.log.Error("Oauth2 error:" + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	auth.log.Info(fmt.Sprintf("Google user %s logged", user.Email))
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 

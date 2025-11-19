@@ -45,7 +45,7 @@ func (s *HttpServer) Start() {
 	// настройка ресурсов аутентификации
 	s.Debug(" - configuring authentication resources")
 	// создание обработчиков
-	gAuth := handler.NewGoogleAuth(s.Config)
+	gAuth := handler.NewGoogleAuth(s.Config, s.Logger)
 
 	r.Route("/auth", func(r chi.Router) {
 		r.Get("/local", todo)                       // стандартный аутентификатор
