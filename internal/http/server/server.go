@@ -40,9 +40,7 @@ func (s *HttpServer) Start() {
 	// ===- определение путей и end-point`ов -=== \\
 	s.Info("Server initialization...")
 	// настройка файлового сервера
-	r.Route("/", func(r chi.Router) {
-		http.FileServer(http.Dir(s.FileServer))
-	})
+	r.Handle("/", http.FileServer(http.Dir(s.FileServer)))
 
 	// настройка ресурсов аутентификации
 	s.Debug(" - configuring authentication resources")
@@ -70,13 +68,14 @@ func (s *HttpServer) Start() {
 
 	// настраиваем сервер
 	srv := &http.Server{
-		Addr:    s.HttpServer.Addr + strconv.Itoa(s.HttpServer.Port),
+		Addr:    s.HttpServer.Addr + ":" + strconv.Itoa(s.HttpServer.Port),
 		Handler: r,
 	}
 	s.Info("Server initialized")
 	// запускаем сервер
 	go func() {
-		s.Info("Server start!")
+		s.Info("Server start! " +
+			"Listening on " + s.HttpServer.Addr + ":" + strconv.Itoa(s.HttpServer.Port))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			s.Error(err.Error())
 		}
