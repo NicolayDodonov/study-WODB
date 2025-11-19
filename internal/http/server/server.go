@@ -46,9 +46,9 @@ func (s *HttpServer) Start() {
 	s.Debug(" - configuring authentication resources")
 	gAuth := auth.New(s.Config)
 	r.Route("/auth", func(r chi.Router) {
-		r.Post("/local", todo)                       // стандартный аутентификатор
-		r.Get("/google", gAuth.GoogleCall)           // Oauth2 аутентификатор от google
-		r.Post("/google-callback", gAuth.GoogleBack) // переадресация назад
+		r.Get("/local", todo)                       // стандартный аутентификатор
+		r.Get("/google", gAuth.GoogleCall)          // Oauth2 аутентификатор от google
+		r.Get("/google-callback", gAuth.GoogleBack) // переадресация назад
 	})
 
 	// настройка graphQL точки входа

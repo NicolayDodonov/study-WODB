@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -18,11 +19,14 @@ type Auth struct {
 // New возвращает готовую конфигурацию
 func New(cnf *config.Config) *Auth {
 	AuthConfig := &oauth2.Config{
-		RedirectURL:  cnf.AuthRedirectURL,        //адрес переадресации назад
+		RedirectURL:  makeRedirectUrl(cnf),       //адрес переадресации назад
 		ClientID:     os.Getenv("Client_ID"),     //todo: получить из переменных окружений
 		ClientSecret: os.Getenv("Client_Secret"), //todo: получить из переменных окружений
-		Scopes:       []string{},
-		Endpoint:     google.Endpoint,
+		Scopes: []string{
+			"https://www.googleapis.com/auth/userinfo.email",
+			"https://www.googleapis.com/auth/userinfo.profile",
+		},
+		Endpoint: google.Endpoint,
 	}
 	return &Auth{
 		Config: AuthConfig,
@@ -31,7 +35,7 @@ func New(cnf *config.Config) *Auth {
 }
 
 func (auth *Auth) GoogleCall(w http.ResponseWriter, r *http.Request) {
-	url := auth.Config.AuthCodeURL("state")
+	url := auth.Config.AuthCodeURL(auth.State)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
@@ -56,4 +60,8 @@ func (auth *Auth) GoogleBack(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+}
+
+func makeRedirectUrl(cnf *config.Config) string {
+	return fmt.Sprintf("http://%s:%d/auth/google-callback", cnf.HttpServer.Addr, cnf.HttpServer.Port)
 }

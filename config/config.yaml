@@ -3,7 +3,6 @@ http-server:
   port: 8080
   timeout: 15s
   path-file-server: "./web/"  #путь до файлов фронта
-  google-redirect-url: ""
   state: "auth1111"
 
 postgres:
