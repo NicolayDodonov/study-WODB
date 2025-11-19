@@ -46,11 +46,13 @@ func (s *HttpServer) Start() {
 	s.Debug(" - configuring authentication resources")
 	// создание обработчиков
 	gAuth := handler.NewGoogleAuth(s.Config, s.Logger)
-
+	yAuth := handler.NewYandexAuth(s.Config, s.Logger)
 	r.Route("/auth", func(r chi.Router) {
 		r.Get("/local", todo)                       // стандартный аутентификатор
 		r.Get("/google", gAuth.GoogleCall)          // Oauth2 аутентификатор от google
 		r.Get("/google-callback", gAuth.GoogleBack) // переадресация назад
+		r.Get("/ya", yAuth.YandexCall)              // Oauth2 аутентификатор от google
+		r.Get("/ya-callback", yAuth.YandexBack)     // переадресация назад
 	})
 
 	// настройка graphQL точки входа

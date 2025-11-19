@@ -22,7 +22,7 @@ type GoogleAuth struct {
 // New возвращает готовую конфигурацию
 func NewGoogleAuth(cnf *config.Config, log *logger.Logger) *GoogleAuth {
 	AuthConfig := &oauth2.Config{
-		RedirectURL:  makeRedirectUrl(cnf),              //адрес переадресации назад
+		RedirectURL:  makeRedirectUrlGoogle(cnf),        //адрес переадресации назад
 		ClientID:     os.Getenv("Google_Client_ID"),     //получить из переменных окружений
 		ClientSecret: os.Getenv("Google_Client_Secret"), //получить из переменных окружений
 		Scopes: []string{ // Список получаемых данных
@@ -81,6 +81,6 @@ func (auth *GoogleAuth) GoogleBack(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 }
 
-func makeRedirectUrl(cnf *config.Config) string {
+func makeRedirectUrlGoogle(cnf *config.Config) string {
 	return fmt.Sprintf("http://%s:%d/auth/google-callback", cnf.HttpServer.Addr, cnf.HttpServer.Port)
 }

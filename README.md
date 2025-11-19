@@ -35,6 +35,8 @@ __Особенности__
    <br> Config_Path - адресс до файла конфигурации
    <br> Google_Client_ID - Открытый ключ Google приложения Oauth2. [Документация](https://developers.google.com/identity/protocols/oauth2?hl=ru)
    <br> Google_Client_Secret - Приватный ключ Google приложения Oauth2.
+   <br> Yandex_Client_ID - Открытый ключ Yandex приложения Oauth2. [Документация](https://yandex.ru/dev/id/doc/ru/how-to)
+   <br> Yandex_Client_Secret - Приватный ключ Yandex приложения Oauth2.
 2. Запустить приложение.
 
 ## Использованые библиотеки

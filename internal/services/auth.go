@@ -25,7 +25,7 @@ func (s *AuthServices) AuthUser(user *model.AuthInfo) error {
 		return nil
 	case model.Google:
 		return nil
-	case model.Vk:
+	case model.Yandex:
 		return nil
 	default:
 		return errors.New("invalid user type")
@@ -43,12 +43,44 @@ func (s *AuthServices) ParseGoogleData(token *oauth2.Token) (*model.AuthInfo, er
 	if err != nil {
 		return nil, err
 	}
-	var UserInfo model.AuthInfo
+	var UserInfo model.GoogleInfo
 	err = json.Unmarshal(rawData, &UserInfo)
 	if err != nil {
 		return nil, err
 	}
-	UserInfo.Type = model.Google
 
-	return &UserInfo, nil
+	// Получаем формат стандартной информации аутентификации
+	User := model.AuthInfo{
+		Type:     model.Google,
+		Email:    UserInfo.Email,
+		Name:     UserInfo.Name,
+		Password: "",
+	}
+	return &User, nil
+}
+
+func (s *AuthServices) ParseYandexData(token *oauth2.Token) (*model.AuthInfo, error) {
+	resp, err := http.Get("https://login.yandex.ru/info?&oauth_token=" + token.AccessToken)
+	if err != nil {
+		return nil, err
+	}
+	// декодируем полученные данные о пользователе
+	rawData, err := io.ReadAll(resp.Body) //userData
+	if err != nil {
+		return nil, err
+	}
+	var UserInfo model.YandexUserInfo
+	err = json.Unmarshal(rawData, &UserInfo)
+	if err != nil {
+		return nil, err
+	}
+
+	// Получаем формат стандартной информации аутентификации
+	User := model.AuthInfo{
+		Type:     model.Yandex,
+		Email:    UserInfo.Email,
+		Name:     UserInfo.Name,
+		Password: "",
+	}
+	return &User, nil
 }
