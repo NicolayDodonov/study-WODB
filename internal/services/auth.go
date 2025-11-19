@@ -25,7 +25,7 @@ func (s *AuthServices) AuthUser(user *model.AuthInfo) error {
 		return nil
 	case model.Google:
 		return nil
-	case model.Vk:
+	case model.Yandex:
 		return nil
 	default:
 		return errors.New("invalid user type")
