@@ -14,6 +14,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// подключение к бд и применение миграций
+
+	// создание http сервера
 	srv := server.New(c, l)
 
 	// запуск http сервера

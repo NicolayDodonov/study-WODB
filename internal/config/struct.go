@@ -27,8 +27,16 @@ type Postgres struct {
 
 type Mongo struct {
 	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
+	Port     int    `yaml:"port"`
 	Database string `yaml:"database"`
+}
+
+type Redis struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
+	Database int    `yaml:"db-id"`
 }
 
 type Logger struct {
