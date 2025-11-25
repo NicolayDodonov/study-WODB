@@ -6,6 +6,7 @@ type Config struct {
 	*HttpServer `yaml:"http-server"`
 	*Postgres   `yaml:"postgres"`
 	*Mongo      `yaml:"mongo"`
+	*Redis      `yaml:"redis"`
 	*Logger     `yaml:"logger"`
 }
 

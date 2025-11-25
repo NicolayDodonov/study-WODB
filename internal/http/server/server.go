@@ -9,6 +9,9 @@ import (
 	"study-WODB/internal/config"
 	"study-WODB/internal/handler"
 	"study-WODB/internal/logger"
+	"study-WODB/internal/storage/mongo"
+	"study-WODB/internal/storage/postgres"
+	"study-WODB/internal/storage/redis"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -19,12 +22,19 @@ import (
 type HttpServer struct {
 	*config.Config
 	*logger.Logger
+	pStorage *postgres.Storage
+	mStorage *mongo.Storage
+	rStorage *redis.Storage
 }
 
-func New(cnf *config.Config, log *logger.Logger) *HttpServer {
+func New(cnf *config.Config, log *logger.Logger,
+	postgres *postgres.Storage, mongo *mongo.Storage, redis *redis.Storage) *HttpServer {
 	return &HttpServer{
 		cnf,
 		log,
+		postgres,
+		mongo,
+		redis,
 	}
 }
 
