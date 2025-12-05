@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"os"
 	"study-WODB/internal/config"
-	"study-WODB/internal/logger"
-	"study-WODB/internal/services"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -15,12 +13,11 @@ import (
 type GoogleAuth struct {
 	Config *oauth2.Config
 	State  string
-	log    *logger.Logger
-	svc    *services.AuthServices
+	*Auth
 }
 
 // New возвращает готовую конфигурацию
-func NewGoogleAuth(cnf *config.Config, log *logger.Logger) *GoogleAuth {
+func NewGoogleAuth(auth *Auth, cnf *config.Config) *GoogleAuth {
 	AuthConfig := &oauth2.Config{
 		RedirectURL:  makeRedirectUrlGoogle(cnf),        //адрес переадресации назад
 		ClientID:     os.Getenv("Google_Client_ID"),     //получить из переменных окружений
@@ -34,8 +31,7 @@ func NewGoogleAuth(cnf *config.Config, log *logger.Logger) *GoogleAuth {
 	return &GoogleAuth{
 		Config: AuthConfig,
 		State:  cnf.State,
-		log:    log,
-		svc:    services.NewAuthServices(),
+		Auth:   auth,
 	}
 }
 
@@ -71,8 +67,9 @@ func (auth *GoogleAuth) GoogleBack(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = auth.svc.AuthUser(user); err != nil {
-		auth.log.Error("Oauth2 error:" + err.Error())
+	// Логируем пользователя в системе
+	if err = auth.login(user); err != nil {
+		auth.log.Error("Login error:" + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}

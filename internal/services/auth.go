@@ -6,30 +6,18 @@ import (
 	"io"
 	"net/http"
 	"study-WODB/internal/model"
+	"study-WODB/internal/storage/postgres"
 
 	"golang.org/x/oauth2"
 )
 
 type AuthServices struct {
 	//todo: дать подключение к СУБД PostgresSQL
+	storage *postgres.Storage
 }
 
-func NewAuthServices() *AuthServices {
-	return &AuthServices{}
-}
-
-// AuthUser проверяет актуальность входящих данных
-func (s *AuthServices) AuthUser(user *model.AuthInfo) error {
-	switch user.Type {
-	case model.Normal:
-		return nil
-	case model.Google:
-		return nil
-	case model.Yandex:
-		return nil
-	default:
-		return errors.New("invalid user type")
-	}
+func NewAuthServices(storage *postgres.Storage) *AuthServices {
+	return &AuthServices{storage: storage}
 }
 
 func (s *AuthServices) ParseGoogleData(token *oauth2.Token) (*model.AuthInfo, error) {
@@ -83,4 +71,34 @@ func (s *AuthServices) ParseYandexData(token *oauth2.Token) (*model.AuthInfo, er
 		Password: "",
 	}
 	return &User, nil
+}
+
+func (s *AuthServices) CheckUser(email string) (bool, error) {
+	if email == "" {
+		return false, errors.New("email is empty")
+	}
+	IsExist, err := s.storage.CheckUserByEmail(email)
+	return IsExist, err
+}
+
+func (s *AuthServices) CheckUserPassword(email, password string) error {
+	if email == "" {
+		return errors.New("email is empty")
+	}
+	err := s.storage.CheckUserByEmailAndPassword(email, password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *AuthServices) AddUser(userdata *model.AuthInfo) error {
+	if userdata.Email == "" {
+		return errors.New("email is empty")
+	}
+	err := s.storage.AddUser(userdata)
+	if err != nil {
+		return err
+	}
+	return nil
 }

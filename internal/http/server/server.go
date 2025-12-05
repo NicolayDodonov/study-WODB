@@ -10,6 +10,7 @@ import (
 	"study-WODB/internal/handler"
 	"study-WODB/internal/http/graphQl"
 	"study-WODB/internal/logger"
+	"study-WODB/internal/services"
 	"study-WODB/internal/storage/mongo"
 	"study-WODB/internal/storage/postgres"
 	"study-WODB/internal/storage/redis"
@@ -56,10 +57,12 @@ func (s *HttpServer) Start() {
 	// настройка ресурсов аутентификации
 	s.Debug(" - configuring authentication resources")
 	// создание обработчиков
-	gAuth := handler.NewGoogleAuth(s.Config, s.Logger)
-	yAuth := handler.NewYandexAuth(s.Config, s.Logger)
+	authServices := services.NewAuthServices(s.pStorage)
+	auth := handler.NewAuth(s.Logger, authServices)
+	gAuth := handler.NewGoogleAuth(auth, s.Config)
+	yAuth := handler.NewYandexAuth(auth, s.Config)
 	r.Route("/auth", func(r chi.Router) {
-		r.Get("/local", todo)                       // стандартный аутентификатор
+		r.Get("/local", auth.Login)                 // стандартный аутентификатор
 		r.Get("/google", gAuth.GoogleCall)          // Oauth2 аутентификатор от google
 		r.Get("/google-callback", gAuth.GoogleBack) // переадресация назад
 		r.Get("/ya", yAuth.YandexCall)              // Oauth2 аутентификатор от google

@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"os"
 	"study-WODB/internal/config"
-	"study-WODB/internal/logger"
-	"study-WODB/internal/services"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/yandex"
@@ -15,11 +13,10 @@ import (
 type YandexAuth struct {
 	Config *oauth2.Config
 	State  string
-	log    *logger.Logger
-	svc    *services.AuthServices
+	*Auth
 }
 
-func NewYandexAuth(cnf *config.Config, log *logger.Logger) *YandexAuth {
+func NewYandexAuth(auth *Auth, cnf *config.Config) *YandexAuth {
 	AuthConfig := &oauth2.Config{
 		RedirectURL:  makeRedirectUrlYandex(cnf),
 		ClientID:     os.Getenv("Yandex_Client_ID"), //получить из переменных окружений
@@ -33,8 +30,7 @@ func NewYandexAuth(cnf *config.Config, log *logger.Logger) *YandexAuth {
 	return &YandexAuth{
 		Config: AuthConfig,
 		State:  cnf.State,
-		log:    log,
-		svc:    services.NewAuthServices(),
+		Auth:   auth,
 	}
 }
 
@@ -70,8 +66,9 @@ func (auth *YandexAuth) YandexBack(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err = auth.svc.AuthUser(user); err != nil {
-		auth.log.Error("Oauth2 error:" + err.Error())
+	// Логируем пользователя в системе
+	if err = auth.login(user); err != nil {
+		auth.log.Error("Login error:" + err.Error())
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
