@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"study-WODB/internal/config"
 	"study-WODB/internal/handler"
+	"study-WODB/internal/http/graphQl"
 	"study-WODB/internal/logger"
 	"study-WODB/internal/storage/mongo"
 	"study-WODB/internal/storage/postgres"
@@ -67,17 +68,34 @@ func (s *HttpServer) Start() {
 
 	// настройка graphQL точки входа
 	s.Debug(" - configuring GraphQL entry points")
+	gQL := graphQl.NewGraphQL(s.Config, s.Logger)
 	r.Route("/menu", func(r chi.Router) {
-
+		r.Get("/check", gQL.Check)
 	})
-	r.Route("/order", func(r chi.Router) {
 
+	// настройка системы заказов
+	s.Debug(" - configuring order entry points")
+	order := handler.NewOrderHandler(s.pStorage, s.mStorage, s.Logger)
+	r.Route("/order", func(r chi.Router) {
+		r.Post("/make", order.Make)
+		r.Post("/close", order.Close)
+		r.Post("/pay", order.Pay)
+		r.Post("/feedback", order.Feedback)
 	})
 
 	// настройка методов api
 	s.Debug(" - configuring application resources")
-	r.Route("/api", func(r chi.Router) {
-
+	restHandler := handler.NewRestHandler(s.pStorage, s.Logger)
+	dishHandler := handler.NewDishHandler(s.pStorage, s.Logger)
+	r.Route("/api/restaurants", func(r chi.Router) {
+		r.Post("/add", restHandler.Add)
+		r.Get("/get", restHandler.Get)
+		r.Delete("/del", restHandler.Del)
+	})
+	r.Route("/api/dish", func(r chi.Router) {
+		r.Post("/add", dishHandler.Add)
+		r.Get("/get", dishHandler.Get)
+		r.Delete("/del", dishHandler.Del)
 	})
 
 	// настраиваем сервер
